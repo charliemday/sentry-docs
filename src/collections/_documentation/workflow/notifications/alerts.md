@@ -87,7 +87,7 @@ You can also configure various personal notifications from your [personal notifi
 
 ### Default Project Alerts
 
-If you have set any specific project alert to default, that means you've configured the notification to the Default Project Alert, which is a switch you can toggle on or off. This toggle switch controls all project alerts set to default. 
+If you have set any specific project alert to default, that means you've configured the notification to the Default Project Alert, which is a switch you can toggle on or off. This toggle switch controls all project alerts set to default.
 
 You can find the Default Project Alerts switch in **User Settings > Account > Notifications > Fine tune alerts by project**.
 
@@ -95,7 +95,7 @@ You can find the Default Project Alerts switch in **User Settings > Account > No
 
 ### Per-Project Alerts
 
-Your per-project alerts have the fine-tuning options of Default, On, or Off. 
+Your per-project alerts have the fine-tuning options of Default, On, or Off.
 
 [{% asset notifications/specific_project_alert.png alt="Dropdown for per-project alerts. Options include default, on, or off." %}]({% asset notifications/specific_project_alert.png @path %})
 
@@ -119,6 +119,5 @@ For more details, see full documentation on [Issue Owners]({%- link _documentati
     - No, all filters are event-based. For example, there aren't configurations for alerting only if an issue is X days old, or assigned to Y, or alerted-on-before, etc.
 - What is the difference between Delete, Delete & Discard, and Ignore?
     - Delete - when you delete an issue with notifications, notifications will continue if the issue is triggered again
-    - [Delete & Discard]({%- link _documentation/accounts/quotas.md -%}#filter-by-issue) - when you delete and discard, all notifications will stop
+    - [Delete & Discard]({%- link _documentation/accounts/quotas/index.md -%}#filter-by-issue) - when you delete and discard, all notifications will stop
     - Ignore - while an issue is ignored, all notifications will stop. If it becomes unignored, notifications will continue. For example, if you have chosen "ignore for 30 minutes," you won't be notified for 30 minutes. Keep in mind; an ignored issue will still count towards your quota.
-    

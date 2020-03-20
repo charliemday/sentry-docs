@@ -1,11 +1,61 @@
 ---
-title: 'Quotas & Filtering'
-sidebar_order: 2
+title: 'Quotas & Events'
+sidebar_order: 0
 ---
 
-Each subscription tier in Sentry provides different monthly quotas for your event capacity. The tiers let you pre-pay for reserved event capacity, and you can also specify a spending cap for on-demand capacity if you need additional events. When you consume your reserved and on-demand capacity for the month, the server will respond with a 429 HTTP status code when it receives an event over quota. 
+Events and quotas are interconnected in Sentry. At the most basic, when you [subscribe to Sentry](https://sentry.io/pricing/), you pay for the number of events to be tracked. This number of events is your quota. When an event occurs, it counts toward your quota.
 
-## What Counts Towards My Quota?
+Sentry’s flexibility means you can exercise fine-grained control over which events count toward your quota.
+
+Let’s clarify a few terms to start:
+-   Event - an event is one instance of you sending Sentry data. Generally, this data is an error. Every event has a unique set of characteristics, called its fingerprint.
+-   Issue - an issue is a grouping of similar events, who all share the same fingerprint. For example, Sentry groups events together when they are triggered by the same part of your code. For more information, see [Grouping & Fingerprinting](https://docs.sentry.io/data-management/event-grouping/).
+-   Quota - your quota is the monthly number of events you pay Sentry to track.
+
+## What Counts Toward My Quota?
+
+Sentry evaluates each event to ensure it includes a valid DSN and project as well as whether the event can be parsed and contains valid fingerprint information; if any of these items are missing or incorrect, the event is rejected. Each of the following then occurs to determine if an event counts toward your quota:
+
+1. **SDK configuration.** 
+      The SDK configuration either allows the event or filters the event out. For more information, see [Outbound Filters in our guide to Manage Your Event Stream](https://docs.sentry.io/guides/manage-event-stream/#outbound-filters) or [Filtering Events](https://docs.sentry.io/error-reporting/configuration/filtering/?platform=browser).
+
+2. **SDK sample rate**
+
+  If a sample rate is defined for the SDK, Sentry evaluates whether this event should be sent as a representative fraction of the sampled events. Setting a sample rate is documented for each SDK. For more information, see [Configuration, sampleRate](https://docs.sentry.io/error-reporting/configuration/?platform=browser#sample-rate).
+3. **Quota availability**
+  Events that exceed your quota are not sent. If you’ve exceeded your quota threshold, the server will respond with a 429 HTTP status code.
+4. **Event repetition**
+  -   If you have intervened to discard events with the same fingerprint, the event does not count toward your quota. For more information, see [Delete & Discard in our guide to Manage Your Event Stream](https://docs.sentry.io/guides/manage-event-stream/#delete--discard) or [Filter by Issue]( https://docs.sentry.io/accounts/quotas/#filter-by-issue).
+  -   If the previous event was resolved, this event counts toward your quota because it may represent a regression in your code.
+  -   If you have intervened to ignore alerts about events with the same fingerprint, this event counts toward your quota because the event is still occurring.
+5. **Spike protection**
+  Sentry’s spike protection prevents huge overages from consuming your event capacity. For more information, see [Spike Protection](https://docs.sentry.io/accounts/quotas/#spike-protection).
+
+Finally, depending on your project’s configuration and the plan you subscribe to, Sentry may also check:
+
+6. **Rate limit for the project**
+  If the rate limit for the project has been exceeded, and your subscription allows, the event will not be counted. For more information, see [Rate Limiting in our guide to Manage Your Event Stream](https://docs.sentry.io/guides/manage-event-stream/#4-rate-limiting) or  [Rate Limiting Projects](https://docs.sentry.io/accounts/quotas/#id1).
+7. **Inbound Filters**
+  If any inbound filter is set for this type of event, and your subscription allows, the event will not be counted. For more information, see [Inbound Filters in our guide to Manage Your Event Stream](https://docs.sentry.io/guides/manage-event-stream/#inbound-data-filters) or [Inbound Data Filter](https://docs.sentry.io/accounts/quotas/#inbound-data-filters). These include:
+  -   Common browser extension errors
+  -   Events coming from localhost
+  -   Known legacy browsers errors
+  -   Custom filters to filter out errors:
+  -   By their error message
+  -   From specific release versions of your code
+  -   From certain IP addresses
+8. The origin of the event, if allowed domains are defined for the project. For more information, see [Preventing Abuse](https://docs.sentry.io/clients/javascript/usage/#preventing-abuse).
+
+After these checks are processed, the event counts toward your quota. It is accepted into Sentry, where it persists and is stored.
+
+A few important notes:
+  - For mobile users, a storage fee is also charged if the Native SDK minidump is attached to the event in addition to the event counting toward your quota. For more information, see [Event Attachments (Preview)](https://docs.sentry.io/platforms/native/minidump/#event-attachments-preview)
+  - If the event exceeds 200kb compressed for events and 20MB compressed for minidump uploads (all files combined), the event will be rejected.
+
+
+
+
+## What Counts Towards My Quota (Table View)?
 
 Not all events count towards your monthly event quota. In general, when events are processed or stored they will count towards your quota. Please see the table below to see which events count.
 
@@ -164,8 +214,8 @@ Because Sentry bills on monthly event volume, spikes can consume your Sentry cap
 If your projects have a high volume of events, you can control how many errors Sentry receives in a few ways:
 
 -   [Configure]({%- link _documentation/error-reporting/configuration/index.md -%}#common-options) the SDK to reduce the volume of data you’re sending
--   Turn on [Inbound Filters]({%- link _documentation/accounts/quotas.md -%}#inbound-data-filters) for legacy browsers, browser extensions, localhost, and web crawlers. Any filtered events will not count towards your quota
--   Set a [per-key rate limits]({%- link _documentation/accounts/quotas.md -%}#id1) for each DSN key in a project
+-   Turn on [Inbound Filters]({%- link _documentation/accounts/quotas/index.md -%}#inbound-data-filters) for legacy browsers, browser extensions, localhost, and web crawlers. Any filtered events will not count towards your quota
+-   Set a [per-key rate limits]({%- link _documentation/accounts/quotas/index.md -%}#id1) for each DSN key in a project
 
 ## Attributes Limits
 
