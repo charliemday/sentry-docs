@@ -1,5 +1,5 @@
 ---
-title: Manage your Event Stream
+title: Manage Your Event Stream, a Guide
 sidebar_order: 3
 ---
 
