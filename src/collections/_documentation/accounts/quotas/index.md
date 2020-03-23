@@ -3,7 +3,7 @@ title: 'Quotas & Events'
 sidebar_order: 0
 ---
 
-Events and quotas are interconnected in Sentry. At the most basic, when you [subscribe to Sentry](https://sentry.io/pricing/), you pay for the number of events to be tracked. This number of events is your quota. When an event occurs, it counts toward your quota.
+Events and quotas are interconnected in Sentry. At the most basic, when you [subscribe to Sentry](https://sentry.io/pricing/), you pay for the number of events to be tracked. This number of events is your quota. When an event is accepted by Sentry, it counts toward your quota.
 
 Sentry’s flexibility means you can exercise fine-grained control over which events count toward your quota.
 
@@ -24,14 +24,14 @@ Sentry completes a thorough evaluation of each event to determine if it counts t
 
 2. **SDK sample rate**
 
-      If a sample rate is defined for the SDK, Sentry evaluates whether this event should be sent as a representative fraction of the sampled events. Setting a sample rate is documented for each SDK. For more information, see [Configuration, sampleRate]({%- link _documentation/error-reporting/configuration/index.md -%}#sample-rate).
+      If a sample rate is defined for the SDK, the SDK evaluates whether this event should be sent as a representative fraction of the sampled events. Setting a sample rate is documented for each SDK. For more information, see [Configuration, sampleRate]({%- link _documentation/error-reporting/configuration/index.md -%}#sample-rate).
 
 3. **Quota availability**
 
       Events that exceed your quota are not sent. To add to your quota or review what happens when you exceed it, see [Increasing Quotas]({%- link _documentation/accounts/quotas/index.md -%}#increasing-quotas).
 
 4. **Event repetition**
-  -   If you have intervened to discard events with the same fingerprint, the event does not count toward your quota. For more information, see [Delete & Discard in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md  -%}#delete--discard) or [Inbound Filters]({%- link _documentation/accounts/quotas/index.md -%}#inbound-data-filters).
+  -   If you have intervened to Delete and Discard events with the same fingerprint, the event does not count toward your quota.
   -   If the previous event was resolved, this event counts toward your quota because it may represent a regression in your code.
   -   If you have intervened to ignore alerts about events with the same fingerprint, this event counts toward your quota because the event is still occurring. For more information, see [Inbound Filters]({%- link _documentation/accounts/quotas/index.md -%}#inbound-data-filters).
 
@@ -52,8 +52,8 @@ In addition, depending on your project’s configuration and the plan you subscr
 After these checks are processed, the event counts toward your quota. It is accepted into Sentry, where it persists and is stored.
 
 A few important notes:
-  - For mobile users, a storage fee is also charged if the Native SDK minidump is attached to the event in addition to the event counting toward your quota. For more information, see [Event Attachments (Preview)]({%- link _documentation/platforms/native/minidump.md -%}#event-attachments-preview).
-  - If the event exceeds 200KB compressed for events and 20MB compressed for minidump uploads (all files combined), the event will be rejected. For more information, see [Attribute Limits]({%- link _documentation/accounts/quotas/index.md -%}#attribute-limits).
+  - A storage fee is also charged if the Native SDK minidump is attached to the event in addition to the event counting toward your quota. For more information, see [Event Attachments (Preview)]({%- link _documentation/platforms/native/minidump.md -%}#event-attachments-preview).
+  - If the event exceeds 200KB compressed or 1MB decompressed for events and 20MB compressed or 50 MB decompressed for minidump uploads (all files combined), the event will be rejected. For more information, see [Attribute Limits]({%- link _documentation/accounts/quotas/index.md -%}#attribute-limits).
 
 ## What Counts Toward my Quota, Table View
 
@@ -151,7 +151,7 @@ In some cases, the data you’re receiving in Sentry is hard to filter, or you d
 -     Common browser extension errors
 -     Events coming from localhost
 -     Known legacy browsers errors
--     Custom filters to filter out errors
+-     Known web crawlers
 -     By their error message
 -     From specific release versions of your code
 -     From certain IP addresses.
@@ -211,6 +211,6 @@ Generic attributes like the event’s label also have limits, but are more flexi
 The following limitations are automatically enforced:
 
 -   Events greater than 200KB are immediately dropped (pre decompression).
--   Stack traces with large frame counts will be trimmed (the middle frames are dropped).
+-   Stack traces with large frame counts will be trimmed (the middle frames are dropped). We limit to a maximum of 250 frames. Only 50 are retained unaltered (modulo usual trimming), with the remaining 200 removing `vars`, `pre_context` and `post_context`.
 -   Collections exceeding the max items will be trimmed down to the maximum size.
 -   Individual values exceeding the maximum length will be trimmed down to the maximum size.
