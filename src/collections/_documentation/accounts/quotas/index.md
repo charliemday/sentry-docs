@@ -51,9 +51,11 @@ In addition, depending on your project’s configuration and the plan you subscr
 
 After these checks are processed, the event counts toward your quota. It is accepted into Sentry, where it persists and is stored.
 
-A few important notes:
-  - A storage fee is also charged if the Native SDK minidump is attached to the event in addition to the event counting toward your quota. For more information, see [Event Attachments (Preview)]({%- link _documentation/platforms/native/minidump.md -%}#event-attachments-preview).
-  - If the event exceeds 200KB compressed or 1MB decompressed for events and 20MB compressed or 50 MB decompressed for minidump uploads (all files combined), the event will be rejected. For more information, see [Attribute Limits]({%- link _documentation/accounts/quotas/index.md -%}#attribute-limits).
+{% include components/alert.html
+    title="Note"
+    content="If the event exceeds 200KB compressed or 1MB decompressed for events and 20MB compressed or 50 MB decompressed for minidump uploads (all files combined), the event will be rejected."
+    level="warning"
+%}
 
 ## What Counts Toward my Quota, Table View
 
@@ -86,7 +88,7 @@ A few important notes:
       <td>Exceeded</td>
     </tr>
     <tr>
-      <td>Is this repeated event set to delete & discard?</td>
+      <td>Is this repeated event set to Delete & Discard?</td>
       <td>No</td>
       <td>Yes</td>
     </tr>
@@ -202,15 +204,9 @@ Because Sentry bills on monthly event volume, spikes can consume your Sentry cap
 
 ## Attribute Limits
 
-Sentry imposes hard limits on various components within an event. While the limits may change over time and vary among attributes, most individual attributes are capped at 512 characters. Additionally, certain attributes also limit the maximum number of items.
+Sentry imposes hard limits on various components within an event. While the limits may change over time and vary among attributes, most individual attributes are capped at 512 characters. Additionally, certain attributes also limit the maximum number of items. Commonly-trimmed values might include, for example:
 
-For example, `extra` data is limited to approximately 256k characters, and each item is capped at approximately 16k characters.
-
-Generic attributes like the event’s label also have limits, but are more flexible depending on their case. For example, the message attribute is limited to 1024 characters.
-
-The following limitations are automatically enforced:
-
--   Events greater than 200KB are immediately dropped (pre decompression).
--   Stack traces with large frame counts will be trimmed (the middle frames are dropped). We limit to a maximum of 250 frames. Only 50 are retained unaltered (modulo usual trimming), with the remaining 200 removing `vars`, `pre_context` and `post_context`.
--   Collections exceeding the max items will be trimmed down to the maximum size.
--   Individual values exceeding the maximum length will be trimmed down to the maximum size.
+-     Stack frame variables. Stack traces with large frame counts will be trimmed (the middle frames are dropped). We limit to a maximum of 250 frames. Only 50 are retained unaltered (modulo usual trimming), with the remaining 200 removing `vars`, `pre_context` and `post_context`.
+-     `extra` data is limited to approximately 256k characters, and each item is capped at approximately 16k characters.
+-     Breadcrumbs and their values
+-     Generic attributes like the event’s label also have limits, but are more flexible depending on their case. For example,  messages and message parameters are limited to 1024 characters.
