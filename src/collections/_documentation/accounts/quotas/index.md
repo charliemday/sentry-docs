@@ -24,14 +24,14 @@ Sentry completes a thorough evaluation of each event to determine if it counts t
 
 2. **SDK sample rate**
 
-      If a sample rate is defined for the SDK, the SDK evaluates whether this event should be sent as a representative fraction of the sampled events. Setting a sample rate is documented for each SDK. For more information, see [Configuration, sampleRate]({%- link _documentation/error-reporting/configuration/index.md -%}#sample-rate).
+      If a sample rate is defined for the SDK, the SDK evaluates whether this event should be sent as a representative fraction of events. Setting a sample rate is documented for each SDK. The SDK sample rate is not dynamic; changing it requires re-deployment. In addition, setting an SDK sample rate limits visibility into the source of events. Setting a rate limit for your project may better suit your needs.
 
 3. **Quota availability**
 
       Events that exceed your quota are not sent. To add to your quota or review what happens when you exceed it, see [Increasing Quotas]({%- link _documentation/accounts/quotas/index.md -%}#increasing-quotas).
 
 4. **Event repetition**
-  -   If you have intervened to Delete and Discard events with the same fingerprint, the event does not count toward your quota.
+  -   If you have intervened to Delete and Discard an issue, then _future_ events with the same fingerprint do not count toward your quota.
   -   If the previous event was resolved, this event counts toward your quota because it may represent a regression in your code.
   -   If you have intervened to ignore alerts about events with the same fingerprint, this event counts toward your quota because the event is still occurring. For more information, see [Inbound Filters]({%- link _documentation/accounts/quotas/index.md -%}#inbound-data-filters).
 
@@ -45,7 +45,7 @@ In addition, depending on your project’s configuration and the plan you subscr
 
       If the rate limit for the project has been exceeded, and your subscription allows, the event will not be counted. For more information, see [Rate Limiting in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md -%}#4-rate-limiting) or  [Rate Limiting Projects]({%- link _documentation/accounts/quotas/index.md -%}#id1).
 
-7. **Inbound Filters**
+7. **Inbound filters**
 
       If any inbound filter is set for this type of event, and your subscription allows, the event will not be counted. For more information, see [Inbound Filters in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md -%}#inbound-data-filters) or [Inbound Data Filter]({%- link _documentation/accounts/quotas/index.md -%}#inbound-data-filters).
 
@@ -88,9 +88,9 @@ After these checks are processed, the event counts toward your quota. It is acce
       <td>Exceeded</td>
     </tr>
     <tr>
-      <td>Is this repeated event set to Delete & Discard?</td>
+      <td>Are <i>future</i> events that repeat set to Delete & Discard?</td>
       <td>No</td>
-      <td>Yes</td>
+      <td> </td>
     </tr>
     <tr>
       <td>Is this repeated event resolved?</td>
