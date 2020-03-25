@@ -10,7 +10,7 @@ Sentry’s flexibility means you can exercise fine-grained control over which ev
 ## Key Terms
 
 Let’s clarify a few terms to start:
--   Event - an event is one instance of you sending Sentry data. Generally, this data is an error. Every event has a unique set of characteristics, called its fingerprint.
+-   Event - an event is one instance of you sending Sentry data. Generally, this data is an error. Every event has a set of characteristics, called its fingerprint.
 -   Issue - an issue is a grouping of similar events, who all share the same fingerprint. For example, Sentry groups events together when they are triggered by the same part of your code. For more information, see [Grouping & Fingerprinting](https://docs.sentry.io/data-management/event-grouping/).
 -   Quota - your quota is the monthly number of events you pay Sentry to track.
 
@@ -20,7 +20,7 @@ Sentry completes a thorough evaluation of each event to determine if it counts t
 
 1. **SDK configuration**
 
-      The SDK configuration either allows the event or filters the event out. For more information, see [Outbound Filters in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md -%}#outbound-filters) or [Filtering Events]({%- link _documentation/error-reporting/configuration/index.md -%}).
+      The SDK configuration either allows the event or filters the event out. For more information, see [Outbound Filters in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md -%}#outbound-filters) or [Filtering Events]({%- link _documentation/error-reporting/configuration/filtering.md -%}).
 
 2. **SDK sample rate**
 
@@ -160,7 +160,7 @@ In some cases, the data you’re receiving in Sentry is hard to filter, or you d
 
 Explore these by navigating to **[Project] » Project Settings » Inbound Filters**. Commonly-set filters are discussed here for your quick reference. For additional information and examples, see [Inbound Data Filters in our guide to Manage Your Event Stream]({%- link _documentation/accounts/quotas/manage-event-stream-guide.md -%}#inbound-data-filters). Commonly-set filters include:
 
-*IP Blocklist.* If you have a rogue client, Sentry supports blocking an IP from sending data. Navigate to **[Project] » Project Settings » Inbound Filters** to add the IP addresses (or subnets) to **Filter errors from these IP addresses**.
+*IP Blacklist.* If you have a rogue client, Sentry supports blocking an IP from sending data. Navigate to **[Project] » Project Settings » Inbound Filters** to add the IP addresses (or subnets) to **Filter errors from these IP addresses**.
 
 *Filter by Release.* If you discover a problematic release causing excessive noise, Sentry supports ignoring all events from that release. Navigate to **[Project] » Project Settings » Inbound Filters**, then add the releases to **Filter errors from these releases**.
 
@@ -206,7 +206,7 @@ Because Sentry bills on monthly event volume, spikes can consume your Sentry cap
 
 Sentry imposes hard limits on various components within an event. While the limits may change over time and vary among attributes, most individual attributes are capped at 512 characters. Additionally, certain attributes also limit the maximum number of items. Commonly-trimmed values might include, for example:
 
--     Stack frame variables. Stack traces with large frame counts will be trimmed (the middle frames are dropped). We limit to a maximum of 250 frames. Only 50 are retained unaltered (modulo usual trimming), with the remaining 200 removing `vars`, `pre_context` and `post_context`.
+-     Stack frame details. Stack traces with large frame counts will be trimmed (the middle frames are dropped). We limit to a maximum of 250 frames. Only 50 are retained unaltered, with the remaining 200 removing `vars`, `pre_context` and `post_context`.
 -     `extra` data is limited to approximately 256k characters, and each item is capped at approximately 16k characters.
 -     Breadcrumbs and their values
--     Generic attributes like the event’s label also have limits, but are more flexible depending on their case. For example,  messages and message parameters are limited to 1024 characters.
+-     Error messages and message parameters are limited to 1024 characters.
